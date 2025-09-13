@@ -5,7 +5,7 @@ edition = "2021"
 authors = ["kubotazen"]
 description = "A simple CLI task manager for Mac"
 license = "MIT"
-repository = "https://github.com/kubotazen/como"
+repository = "https://github.com/ze-sudo/como"
 keywords = ["cli", "task-manager", "productivity", "todo"]
 categories = ["command-line-utilities"]
 
