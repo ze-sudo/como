@@ -21,7 +21,7 @@ MySQLやPythonのターミナル操作のような直感的なCLI体験を提供
 ### ビルド方法
 
 ```bash
-git clone <リポジトリURL>
+git clone https://github.com/ze-sudo/como
 cd cli-rust-como
 cargo build --release
 ```
