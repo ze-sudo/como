@@ -59,33 +59,10 @@ fn list_tasks(task_manager: &TaskManager, sort_by_id: bool, sort_by_status: bool
         return Ok(());
     }
 
-    if unchecked_only {
-        // 未完了のみ表示の場合
-        println!("📋 未完了タスク:");
-        for task in &tasks {
-            println!("  ☐ [{}] {}", task.id, task.title);
-        }
-    } else {
-        // ステータス別に分けて表示
-        let unchecked: Vec<_> = tasks.iter().filter(|task| !task.completed).collect();
-        let checked: Vec<_> = tasks.iter().filter(|task| task.completed).collect();
-
-        if !unchecked.is_empty() {
-            println!("📋 未完了タスク:");
-            for task in unchecked {
-                println!("  ☐ [{}] {}", task.id, task.title);
-            }
-            if !checked.is_empty() {
-                println!();
-            }
-        }
-
-        if !checked.is_empty() {
-            println!("✅ 完了済みタスク:");
-            for task in checked {
-                println!("  ☑ [{}] {}", task.id, task.title);
-            }
-        }
+    // シンプルな表示形式
+    for task in &tasks {
+        let status = if task.completed { "✓" } else { " " };
+        println!("[{}] {} - {}", status, task.id, task.title);
     }
     
     Ok(())
