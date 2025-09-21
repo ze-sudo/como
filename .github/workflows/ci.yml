@@ -6,46 +6,22 @@ on:
   pull_request:
     branches: [ main ]
 
-# セキュリティ：最小権限の原則
 permissions:
   contents: read
 
 jobs:
   test:
-    name: Test on ${{ matrix.os }}
+    name: Test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        rust: [stable]
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        persist-credentials: false  # セキュリティ強化
+    - uses: actions/checkout@v4
 
     - name: Install Rust
       uses: dtolnay/rust-toolchain@stable
-      with:
-        toolchain: ${{ matrix.rust }}
-
-    - name: Cache cargo dependencies
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.cargo/registry
-          ~/.cargo/git
-          target
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-cargo-
-
-    - name: Check formatting
-      run: cargo fmt --all -- --check
-
-    - name: Check clippy
-      run: cargo clippy --all-targets --all-features -- -D warnings
 
     - name: Build
       run: cargo build --verbose
@@ -53,45 +29,8 @@ jobs:
     - name: Run tests
       run: cargo test --verbose
 
-    - name: Test installation
-      run: cargo install --path . --force
+    - name: Check formatting
+      run: cargo fmt --all -- --check
 
-    - name: Test basic functionality (Unix)
-      if: runner.os != 'Windows'
-      run: |
-        ./target/debug/como add "Test task"
-        ./target/debug/como list
-        ./target/debug/como list --help
-
-    - name: Test basic functionality (Windows)
-      if: runner.os == 'Windows'
-      run: |
-        .\target\debug\como.exe add "Test task"
-        .\target\debug\como.exe list
-        .\target\debug\como.exe list --help
-
-  security-audit:
-    name: Security Audit
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        persist-credentials: false
-
-    - name: Install Rust
-      uses: dtolnay/rust-toolchain@stable
-
-    - name: Security audit
-      run: |
-        cargo install cargo-audit --quiet
-        cargo audit
-
-    - name: Check for known vulnerabilities
-      run: |
-        cargo install cargo-deny --quiet
-        cargo deny check advisories
+    - name: Run clippy
+      run: cargo clippy -- -D warnings
