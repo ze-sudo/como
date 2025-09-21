@@ -15,13 +15,13 @@
 
 ### 報告方法
 
-1. **プライベート脆弱性報告** (推奨)
-   - GitHubの [Security Advisory](https://github.com/ze-sudo/como/security/advisories) 機能を使用
-   - 「Report a vulnerability」をクリックして報告
+**プライベート脆弱性報告**
+- GitHubの [Security Advisory](https://github.com/ze-sudo/como/security/advisories) 機能を使用
+- 「Report a vulnerability」をクリックして報告
+- この方法が最も安全で、やり取りが暗号化され追跡可能です
 
-2. **メール報告**
-   - [security@your-domain.com](mailto:security@your-domain.com) まで連絡
-   - 件名に「[SECURITY] como vulnerability report」を記載
+**代替方法**
+- 緊急の場合は [@ze-sudo](https://github.com/ze-sudo) に直接GitHubメッセージを送信
 
 ### 報告内容
 
@@ -62,7 +62,7 @@
 
 ## 謝辞
 
-セキュリティ向上に貢献してくださった研究者や開発者の方々に感謝いたします。責任ある開示に協力いただいた場合、クレジットを提供いたします（希望される場合）。
+セキュリティ向上に貢献してくださった研究者や開発者の方々に感謝いたします。
 
 ---
 
