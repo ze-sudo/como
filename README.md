@@ -8,8 +8,15 @@ MySQLやPythonのターミナル操作のような直感的なCLI体験を提供
 
 - **クロスプラットフォーム対応**: Windows、macOS、Linuxで動作
 - **CLI完結型**: ターミナルからコマンドラインで操作
-- **ページ管理**: 複数のタスクリストをページごとに分類
-- **ローカル保存**: JSONファイルでローカルにデータを保存
+- **ページ管理**: 複数のタスクリストをページごとに## 今後の予定
+
+- ✅ **クロスプラットフォーム対応**: Windows、macOS、Linux対応完了
+- 🔄 **パッケージマネージャー対応**: Homebrew、Winget、apt/yum などの各プラットフォームパッケージマネージャーでのインストール対応
+- 📦 **自動リリース**: GitHub Actionsによる自動ビルド・リリース
+- 🌐 **Web版の開発**: ブラウザで動作するWeb版
+- 📱 **モバイル対応**: iOS/Android向けのモバイルアプリ
+- 🔧 **プラグインシステム**: 機能拡張のためのプラグインアーキテクチャ
+- 🎨 **テーマ・カスタマイゼーション**: カラーテーマや表示形式のカスタマイズカル保存**: JSONファイルでローカルにデータを保存
 - **直感的操作**: シンプルで覚えやすいコマンド体系
 - **高速表示オプション**: ID順ソート、ステータス別ソート、未完了フィルタ
 
@@ -21,7 +28,20 @@ MySQLやPythonのターミナル操作のような直感的なCLI体験を提供
 
 ## インストール
 
-### Rustが利用可能な場合（推奨）
+### 対応プラットフォーム
+
+Comoは以下のプラットフォームで動作確認済みです：
+
+| プラットフォーム | アーキテクチャ | 対応状況 | 推奨インストール方法 |
+|----------------|--------------|----------|-------------------|
+| **macOS** | Intel (x86_64) | ✅ 完全対応 | cargo install |
+| **macOS** | Apple Silicon (ARM64) | ✅ 完全対応 | cargo install |
+| **Windows** | x86_64 | ✅ 完全対応 | バイナリダウンロード |
+| **Linux** | x86_64 | ✅ 完全対応 | cargo install |
+
+### インストール方法
+
+#### 1. Rustによるビルド（推奨）
 
 ```bash
 # GitHubから直接インストール
@@ -33,20 +53,56 @@ cd cli-rust-como
 cargo install --path .
 ```
 
-### バイナリダウンロード
+#### 2. バイナリダウンロード
 
-[Releases](https://github.com/ze-sudo/como/releases)から各プラットフォーム用のバイナリをダウンロードできます。
+各プラットフォーム用のプリビルドバイナリを[Releases](https://github.com/ze-sudo/como/releases)からダウンロード可能です：
+
+- **Windows**: `como-x86_64-pc-windows-msvc.exe`
+- **macOS (Intel)**: `como-x86_64-apple-darwin`
+- **macOS (Apple Silicon)**: `como-aarch64-apple-darwin`
+- **Linux**: `como-x86_64-unknown-linux-gnu`
+
+```bash
+# ダウンロード後の設定例 (macOS/Linux)
+chmod +x como-*
+sudo mv como-* /usr/local/bin/como
+
+# パス確認
+como --version
+```
 
 ### 前提条件
 
-- Rust 1.70以降 (cargo installを使用する場合)
+#### Rustでビルドする場合
+
+- **Rust**: 1.70以降
+- **Cargo**: Rust付属版
+
+#### バイナリ使用の場合
+
+- 前提条件なし（各OSのネイティブバイナリ）
 
 ### ビルド方法
 
+開発者向け：
+
 ```bash
+# プロジェクトをクローン
 git clone https://github.com/ze-sudo/como
 cd cli-rust-como
+
+# デバッグビルド
+cargo build
+
+# リリースビルド
 cargo build --release
+
+# ローカルテスト実行
+./test-local.sh
+
+# クロスプラットフォームビルド（要設定）
+cargo build --target x86_64-pc-windows-msvc      # Windows
+cargo build --target x86_64-unknown-linux-gnu    # Linux
 ```
 
 ### システムへのインストール
@@ -113,22 +169,26 @@ como page delete work
 タスクデータは各OS固有のディレクトリに保存されます：
 
 ### Windows
+
 ```text
 %APPDATA%\como\
 ```
 
 ### macOS
+
 ```text
 ~/Library/Application Support/como/
 ```
 
 ### Linux
+
 ```text
 ~/.config/como/
 # または $XDG_CONFIG_HOME/como/
 ```
 
 各プラットフォームで以下のファイルが作成されます：
+
 - 各ページのデータ: `{ページ名}.json`
 - 現在のページ情報: `current_page.txt`
 
@@ -218,6 +278,18 @@ MIT License
 
 ## 今後の予定
 
-- WindowsやLinuxなどへの対応
-- Web版の開発
+- ✅ **Web版開発**:
+
+
+## 貢献
+
+新機能の提案やバグの修正などの貢献を歓迎します！
+
+1. このリポジトリをフォーク
+2. 機能ブランチを作成 (`git checkout -b feature/amazing-feature`)
+3. 変更をコミット (`git commit -m 'Add amazing feature'`)
+4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
+5. プルリクエストを作成
+
+問題や提案があれば、[Issues](https://github.com/ze-sudo/como/issues)からお知らせください。
 
