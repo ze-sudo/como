@@ -11,12 +11,6 @@ MySQLやPythonのターミナル操作のような直感的なCLI体験を提供
 - **ページ管理**: 複数のタスクリストをページごとに## 今後の予定
 
 - ✅ **クロスプラットフォーム対応**: Windows、macOS、Linux対応完了
-- 🔄 **パッケージマネージャー対応**: Homebrew、Winget、apt/yum などの各プラットフォームパッケージマネージャーでのインストール対応
-- 📦 **自動リリース**: GitHub Actionsによる自動ビルド・リリース
-- 🌐 **Web版の開発**: ブラウザで動作するWeb版
-- 📱 **モバイル対応**: iOS/Android向けのモバイルアプリ
-- 🔧 **プラグインシステム**: 機能拡張のためのプラグインアーキテクチャ
-- 🎨 **テーマ・カスタマイゼーション**: カラーテーマや表示形式のカスタマイズカル保存**: JSONファイルでローカルにデータを保存
 - **直感的操作**: シンプルで覚えやすいコマンド体系
 - **高速表示オプション**: ID順ソート、ステータス別ソート、未完了フィルタ
 
@@ -41,7 +35,7 @@ Comoは以下のプラットフォームで動作確認済みです：
 
 ### インストール方法
 
-#### 1. Rustによるビルド（推奨）
+#### Rustによるビルド（推奨）
 
 ```bash
 # GitHubから直接インストール
@@ -53,23 +47,6 @@ cd cli-rust-como
 cargo install --path .
 ```
 
-#### 2. バイナリダウンロード
-
-各プラットフォーム用のプリビルドバイナリを[Releases](https://github.com/ze-sudo/como/releases)からダウンロード可能です：
-
-- **Windows**: `como-x86_64-pc-windows-msvc.exe`
-- **macOS (Intel)**: `como-x86_64-apple-darwin`
-- **macOS (Apple Silicon)**: `como-aarch64-apple-darwin`
-- **Linux**: `como-x86_64-unknown-linux-gnu`
-
-```bash
-# ダウンロード後の設定例 (macOS/Linux)
-chmod +x como-*
-sudo mv como-* /usr/local/bin/como
-
-# パス確認
-como --version
-```
 
 ### 前提条件
 
