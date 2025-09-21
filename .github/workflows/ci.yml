@@ -30,49 +30,35 @@ jobs:
       with:
         toolchain: ${{ matrix.rust }}
 
-    - name: Cache cargo registry
+    - name: Cache cargo dependencies
       uses: actions/cache@v4
       with:
-        path: ~/.cargo/registry
-        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
         restore-keys: |
-          ${{ runner.os }}-cargo-registry-
-
-    - name: Cache cargo index
-      uses: actions/cache@v4
-      with:
-        path: ~/.cargo/git
-        key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-cargo-index-
-
-    - name: Cache cargo build
-      uses: actions/cache@v4
-      with:
-        path: target
-        key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-cargo-build-target-
+          ${{ runner.os }}-cargo-
 
     - name: Check formatting
-      run: cd cli-rust-como && cargo fmt --all -- --check
+      run: cargo fmt --all -- --check
 
     - name: Check clippy
-      run: cd cli-rust-como && cargo clippy --all-targets --all-features -- -D warnings
+      run: cargo clippy --all-targets --all-features -- -D warnings
 
     - name: Build
-      run: cd cli-rust-como && cargo build --verbose
+      run: cargo build --verbose
 
     - name: Run tests
-      run: cd cli-rust-como && cargo test --verbose
+      run: cargo test --verbose
 
     - name: Test installation
-      run: cd cli-rust-como && cargo install --path . --force
+      run: cargo install --path . --force
 
     - name: Test basic functionality (Unix)
       if: runner.os != 'Windows'
       run: |
-        cd cli-rust-como
         ./target/debug/como add "Test task"
         ./target/debug/como list
         ./target/debug/como list --help
@@ -80,7 +66,6 @@ jobs:
     - name: Test basic functionality (Windows)
       if: runner.os == 'Windows'
       run: |
-        cd cli-rust-como
         .\target\debug\como.exe add "Test task"
         .\target\debug\como.exe list
         .\target\debug\como.exe list --help
@@ -103,12 +88,10 @@ jobs:
 
     - name: Security audit
       run: |
-        cd cli-rust-como
-        cargo install cargo-audit
+        cargo install cargo-audit --quiet
         cargo audit
 
     - name: Check for known vulnerabilities
       run: |
-        cd cli-rust-como
-        cargo install cargo-deny
+        cargo install cargo-deny --quiet
         cargo deny check advisories

@@ -2,7 +2,7 @@ version: 2
 updates:
   # Rust dependencies
   - package-ecosystem: "cargo"
-    directory: "/cli-rust-como"
+    directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
