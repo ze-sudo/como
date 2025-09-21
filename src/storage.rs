@@ -3,10 +3,34 @@ use anyhow::{Context, Result};
 use std::fs;
 use std::path::PathBuf;
 
-/// como用のデータディレクトリパス
+/// como用のデータディレクトリパス（クロスプラットフォーム対応）
 pub fn get_como_data_dir() -> Result<PathBuf> {
-    let home_dir = dirs::home_dir().context("ホームディレクトリが取得できません")?;
-    Ok(home_dir.join("Library/Application Support/como"))
+    let config_dir = if cfg!(target_os = "windows") {
+        // Windows: %APPDATA%\como
+        std::env::var("APPDATA")
+            .map(PathBuf::from)
+            .unwrap_or_else(|_| PathBuf::from("."))
+            .join("como")
+    } else if cfg!(target_os = "macos") {
+        // macOS: ~/Library/Application Support/como
+        dirs::home_dir()
+            .context("ホームディレクトリが取得できません")?
+            .join("Library")
+            .join("Application Support")
+            .join("como")
+    } else {
+        // Linux: ~/.config/como または $XDG_CONFIG_HOME/como
+        std::env::var("XDG_CONFIG_HOME")
+            .map(PathBuf::from)
+            .unwrap_or_else(|_| {
+                dirs::home_dir()
+                    .unwrap_or_else(|| PathBuf::from("."))
+                    .join(".config")
+            })
+            .join("como")
+    };
+    
+    Ok(config_dir)
 }
 
 /// データディレクトリを作成（存在しない場合）

@@ -1,0 +1,114 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# セキュリティ：最小権限の原則
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        rust: [stable]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: false  # セキュリティ強化
+
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: ${{ matrix.rust }}
+
+    - name: Cache cargo registry
+      uses: actions/cache@v4
+      with:
+        path: ~/.cargo/registry
+        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-registry-
+
+    - name: Cache cargo index
+      uses: actions/cache@v4
+      with:
+        path: ~/.cargo/git
+        key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-index-
+
+    - name: Cache cargo build
+      uses: actions/cache@v4
+      with:
+        path: target
+        key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-build-target-
+
+    - name: Check formatting
+      run: cd cli-rust-como && cargo fmt --all -- --check
+
+    - name: Check clippy
+      run: cd cli-rust-como && cargo clippy --all-targets --all-features -- -D warnings
+
+    - name: Build
+      run: cd cli-rust-como && cargo build --verbose
+
+    - name: Run tests
+      run: cd cli-rust-como && cargo test --verbose
+
+    - name: Test installation
+      run: cd cli-rust-como && cargo install --path . --force
+
+    - name: Test basic functionality (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        cd cli-rust-como
+        ./target/debug/como add "Test task"
+        ./target/debug/como list
+        ./target/debug/como list --help
+
+    - name: Test basic functionality (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        cd cli-rust-como
+        .\target\debug\como.exe add "Test task"
+        .\target\debug\como.exe list
+        .\target\debug\como.exe list --help
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Security audit
+      run: |
+        cd cli-rust-como
+        cargo install cargo-audit
+        cargo audit
+
+    - name: Check for known vulnerabilities
+      run: |
+        cd cli-rust-como
+        cargo install cargo-deny
+        cargo deny check advisories

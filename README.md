@@ -6,17 +6,40 @@ MySQLやPythonのターミナル操作のような直感的なCLI体験を提供
 
 ## 特徴
 
+- **クロスプラットフォーム対応**: Windows、macOS、Linuxで動作
 - **CLI完結型**: ターミナルからコマンドラインで操作
 - **ページ管理**: 複数のタスクリストをページごとに分類
 - **ローカル保存**: JSONファイルでローカルにデータを保存
 - **直感的操作**: シンプルで覚えやすいコマンド体系
+- **高速表示オプション**: ID順ソート、ステータス別ソート、未完了フィルタ
+
+## サポートプラットフォーム
+
+- **Windows**: Windows 10以降
+- **macOS**: macOS 10.15 (Catalina)以降
+- **Linux**: Ubuntu 18.04以降、CentOS 7以降、その他主要ディストリビューション
 
 ## インストール
 
+### Rustが利用可能な場合（推奨）
+
+```bash
+# GitHubから直接インストール
+cargo install --git https://github.com/ze-sudo/como
+
+# または、ローカルでビルド
+git clone https://github.com/ze-sudo/como
+cd cli-rust-como
+cargo install --path .
+```
+
+### バイナリダウンロード
+
+[Releases](https://github.com/ze-sudo/como/releases)から各プラットフォーム用のバイナリをダウンロードできます。
+
 ### 前提条件
 
-- macOS（今後、WindowsやLinuxにも対応予定）
-- Rust (Cargoが利用可能)
+- Rust 1.70以降 (cargo installを使用する場合)
 
 ### ビルド方法
 
@@ -87,12 +110,25 @@ como page delete work
 
 ## データ保存先
 
-タスクデータは以下のディレクトリに保存されます：
+タスクデータは各OS固有のディレクトリに保存されます：
 
+### Windows
+```text
+%APPDATA%\como\
+```
+
+### macOS
 ```text
 ~/Library/Application Support/como/
 ```
 
+### Linux
+```text
+~/.config/como/
+# または $XDG_CONFIG_HOME/como/
+```
+
+各プラットフォームで以下のファイルが作成されます：
 - 各ページのデータ: `{ページ名}.json`
 - 現在のページ情報: `current_page.txt`
 
