@@ -14,7 +14,9 @@ fn main() {
     };
 
     let result = match cli.command {
-        Commands::List => list_tasks(&task_manager),
+        Commands::List { sort_by_id, sort_by_status, unchecked_only } => {
+            list_tasks(&task_manager, sort_by_id, sort_by_status, unchecked_only)
+        },
         Commands::Add { title } => add_task(&task_manager, title),
         Commands::Edit { id, title } => edit_task(&task_manager, id, title),
         Commands::Delete { id } => delete_task(&task_manager, id),
@@ -28,8 +30,8 @@ fn main() {
     }
 }
 
-fn list_tasks(task_manager: &TaskManager) -> Result<(), anyhow::Error> {
-    let tasks = task_manager.list_tasks()?;
+fn list_tasks(task_manager: &TaskManager, sort_by_id: bool, sort_by_status: bool, unchecked_only: bool) -> Result<(), anyhow::Error> {
+    let mut tasks = task_manager.list_tasks()?;
     
     println!("=== {} ページのタスク一覧 ===", task_manager.get_current_page());
     
@@ -38,9 +40,52 @@ fn list_tasks(task_manager: &TaskManager) -> Result<(), anyhow::Error> {
         return Ok(());
     }
 
-    for task in tasks {
-        let status = if task.completed { "✓" } else { " " };
-        println!("[{}] {} - {}", status, task.id, task.title);
+    // フィルタリング：未完了のみ表示
+    if unchecked_only {
+        tasks.retain(|task| !task.completed);
+    }
+
+    // ソート処理（優先順位: -i > -s > デフォルト）
+    if sort_by_id {
+        // ID順ソート
+        tasks.sort_by_key(|task| task.id);
+    } else {
+        // デフォルトまたは-s指定時：ステータス別ソート（未完了→完了）
+        tasks.sort_by_key(|task| (task.completed, task.id));
+    }
+
+    if tasks.is_empty() {
+        println!("表示するタスクがありません");
+        return Ok(());
+    }
+
+    if unchecked_only {
+        // 未完了のみ表示の場合
+        println!("📋 未完了タスク:");
+        for task in &tasks {
+            println!("  ☐ [{}] {}", task.id, task.title);
+        }
+    } else {
+        // ステータス別に分けて表示
+        let unchecked: Vec<_> = tasks.iter().filter(|task| !task.completed).collect();
+        let checked: Vec<_> = tasks.iter().filter(|task| task.completed).collect();
+
+        if !unchecked.is_empty() {
+            println!("📋 未完了タスク:");
+            for task in unchecked {
+                println!("  ☐ [{}] {}", task.id, task.title);
+            }
+            if !checked.is_empty() {
+                println!();
+            }
+        }
+
+        if !checked.is_empty() {
+            println!("✅ 完了済みタスク:");
+            for task in checked {
+                println!("  ☑ [{}] {}", task.id, task.title);
+            }
+        }
     }
     
     Ok(())

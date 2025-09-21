@@ -12,7 +12,17 @@ pub struct Cli {
 #[derive(Subcommand)]
 pub enum Commands {
     /// タスク一覧を表示
-    List,
+    List {
+        /// ID順でソート
+        #[arg(short = 'i', long = "id")]
+        sort_by_id: bool,
+        /// ステータス別ソート（デフォルト）
+        #[arg(short = 's', long = "status")]
+        sort_by_status: bool,
+        /// 未完了タスクのみ表示
+        #[arg(short = 'u', long = "unchecked")]
+        unchecked_only: bool,
+    },
     /// 新しいタスクを追加
     Add {
         /// タスクのタイトル

@@ -37,8 +37,24 @@ cargo install --path .
 ### 基本的なタスク操作
 
 ```bash
-# タスク一覧を表示
+# タスク一覧を表示（デフォルト：ステータス別ソート）
 como list
+
+# ID順でタスク一覧を表示
+como list -i
+como list --id
+
+# ステータス別ソート（デフォルトと同じ）
+como list -s
+como list --status
+
+# 未完了タスクのみ表示
+como list -u
+como list --unchecked
+
+# オプションの組み合わせ使用
+como list -i -u    # ID順で未完了のみ
+como list --id --unchecked
 
 # タスクを追加
 como add "企画書を作成する"
@@ -84,7 +100,10 @@ como page delete work
 
 | コマンド | 説明 |
 |---------|------|
-| `como list` | タスク一覧を表示 |
+| `como list` | タスク一覧を表示（デフォルト：ステータス別ソート） |
+| `como list -i` / `como list --id` | ID順でタスク一覧を表示 |
+| `como list -s` / `como list --status` | ステータス別ソート（デフォルトと同じ） |
+| `como list -u` / `como list --unchecked` | 未完了タスクのみ表示 |
 | `como add <タイトル>` | タスクを追加 |
 | `como edit <ID> <新タイトル>` | タスクを編集 |
 | `como delete <ID>` | タスクを削除 |
