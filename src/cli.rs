@@ -6,16 +6,7 @@ use clap::{Parser, Subcommand};
 #[command(version = "0.1.0")]
 pub struct Cli {
     #[command(subcommand)]
-    pub command: Option<Commands>,
-}
-
-/// インタラクティブモード用のパーサー
-#[derive(Parser)]
-#[command(name = "")]
-#[command(no_binary_name = true)]
-pub struct InteractiveCli {
-    #[command(subcommand)]
-    pub command: InteractiveCommands,
+    pub command: Commands,
 }
 
 #[derive(Subcommand)]
@@ -61,57 +52,6 @@ pub enum Commands {
         #[command(subcommand)]
         action: Option<PageCommands>,
     },
-}
-
-/// インタラクティブモード用のコマンド（quit/exitを追加）
-#[derive(Subcommand)]
-pub enum InteractiveCommands {
-    /// タスク一覧を表示
-    List {
-        /// ID順でソート
-        #[arg(short = 'i', long = "id")]
-        sort_by_id: bool,
-        /// ステータス別ソート（デフォルト）
-        #[arg(short = 's', long = "status")]
-        sort_by_status: bool,
-        /// 未完了タスクのみ表示
-        #[arg(short = 'u', long = "unchecked")]
-        unchecked_only: bool,
-    },
-    /// 新しいタスクを追加
-    Add {
-        /// タスクのタイトル
-        title: String,
-    },
-    /// タスクを編集
-    Edit {
-        /// タスクID
-        id: u32,
-        /// 新しいタイトル
-        title: String,
-    },
-    /// タスクを削除
-    Delete {
-        /// タスクID
-        id: u32,
-    },
-    /// タスクのチェック状態を切り替え
-    Check {
-        /// タスクID
-        id: u32,
-    },
-    /// ページ管理
-    Page {
-        /// ページ名（指定時は切り替え、未指定時は一覧表示）
-        name: Option<String>,
-        #[command(subcommand)]
-        action: Option<PageCommands>,
-    },
-    /// インタラクティブモードを終了
-    #[command(alias = ":q")]
-    Quit,
-    /// インタラクティブモードを終了
-    Exit,
 }
 
 #[derive(Subcommand)]
